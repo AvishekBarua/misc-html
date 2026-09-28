@@ -1,0 +1,293 @@
+<title>Gym Session Lines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one section per person, two stacked 50-minute lines (Day A, Day B), each followed by its exercise list */
+:root {
+  --bg: #f5f7f7;
+  --surface: #ffffff;
+  --fg: #1c2a2e;
+  --muted: #5b6b70;
+  --rule: #d9e1e3;
+  --warm: #b9c4c7;
+  --strength: #1f6f78;
+  --cardio: #d98a2b;
+  --cool: #8fa6ad;
+  --on-color: #ffffff;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12191b; --surface: #1a2427; --fg: #e4ecee; --muted: #93a5aa; --rule: #2c3a3e;
+    --warm: #4a5b60; --strength: #3fa3ae; --cardio: #e0a04d; --cool: #5f7981; --on-color: #0e1a1c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12191b; --surface: #1a2427; --fg: #e4ecee; --muted: #93a5aa; --rule: #2c3a3e;
+  --warm: #4a5b60; --strength: #3fa3ae; --cardio: #e0a04d; --cool: #5f7981; --on-color: #0e1a1c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-inline: 16px; padding-block: 32px;
+}
+main { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1 { font-size: 1.6rem; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.lede { color: var(--muted); margin: 6px 0 0; max-width: 65ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+h2 { font-size: 1.15rem; font-weight: 600; margin: 0; }
+.person { display: flex; flex-direction: column; gap: 18px; }
+.person > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+.person > header p { margin: 0; color: var(--muted); font-size: 0.9rem; font-family: var(--font-mono); }
+.session { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.session h3 { margin: 0; font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.session h3 span { font-family: var(--font-mono); font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+.scroll { overflow-x: auto; padding-bottom: 4px; }
+.line { min-width: 560px; }
+.labels, .bar { display: flex; }
+.labels { height: 22px; }
+.labels div { font-size: 0.75rem; font-weight: 500; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-inline: 2px; }
+.bar { height: 44px; gap: 2px; }
+.seg { display: flex; align-items: center; justify-content: center; border-radius: 5px; color: var(--on-color); font-family: var(--font-mono); font-weight: 500; font-size: 0.9rem; min-width: 0; }
+.seg.warm { background: var(--warm); }
+.seg.ex { background: var(--strength); }
+.seg.cardio { background: var(--cardio); }
+.seg.cool { background: var(--cool); }
+.axis { position: relative; height: 30px; border-top: 1px solid var(--rule); margin-top: 8px; }
+.axis span { position: absolute; top: 4px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+.axis span:first-child { transform: none; }
+.axis span:last-child { transform: translateX(-100%); }
+.axis em { position: absolute; right: 0; bottom: -2px; font-style: normal; font-size: 0.7rem; color: var(--muted); display: none; }
+ol.ex-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ol.ex-list li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 12px; padding: 9px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+ol.ex-list li:first-child { border-top: 0; }
+.n { font-family: var(--font-mono); color: var(--strength); font-weight: 500; }
+.name { font-weight: 500; }
+.how { color: var(--muted); font-size: 0.87rem; grid-column: 2; }
+.sr { font-family: var(--font-mono); font-size: 0.85rem; text-align: right; grid-row: 1; grid-column: 3; white-space: nowrap; }
+.refs { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 2px; }
+.refs.start { grid-column: auto; margin-top: 14px; }
+.refs-intro { font-size: 0.82rem; color: var(--muted); margin-right: 2px; }
+.ref-link { font-size: 0.82rem; font-weight: 500; color: var(--strength); text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
+.ref-link:hover { border-color: var(--strength); }
+.ref-link:focus-visible { outline: 2px solid var(--strength); outline-offset: 2px; }
+.blocks { margin: 0; padding: 10px 0 0; border-top: 1px solid var(--rule); display: grid; gap: 4px; font-size: 0.87rem; color: var(--muted); }
+.blocks b { color: var(--fg); font-weight: 500; }
+@media (max-width: 480px) {
+  .sr { grid-row: auto; grid-column: 2; text-align: left; }
+}
+</style>
+
+<main>
+  <div>
+    <h1>Gym Session Lines</h1>
+    <p class="lede">The four 50-minute gym sessions, one line each, laid out to scale by minute. Two days a week per person: Day A and Day B.</p>
+    <div class="refs start">
+      <span class="refs-intro">Full body introduction to the gym:</span>
+      <a class="ref-link" href="https://www.youtube.com/watch?v=oBs-PE34x7g&amp;t=246s" target="_blank" rel="noopener noreferrer">Video: Full body gym introduction</a>
+    </div>
+    <div class="legend" aria-label="Legend">
+      <span><i style="background:var(--warm)"></i>Warm-up</span>
+      <span><i style="background:var(--strength)"></i>Strength + core (numbered)</span>
+      <span><i style="background:var(--cardio)"></i>Cardio</span>
+      <span><i style="background:var(--cool)"></i>Cool-down</span>
+    </div>
+  </div>
+  <div id="people" style="display:contents"></div>
+</main>
+
+<script>
+var W_WARM = 'Treadmill brisk walk, easy pace. Raises heart rate and warms up joints.';
+var M_WARM = 'Treadmill brisk walk plus joint mobility (hips, shoulders, ankles). A longer warm-up matters more at 47.';
+var W_CARDIO = 'Treadmill incline walk, low-impact and joint-friendly. The main fat-loss driver of the session.';
+var COOL = 'Slow walk and stretch the muscles worked.';
+
+var people = [
+  {
+    name: 'Deepa', meta: '35 years, 5 ft, 70 kg',
+    sessions: [
+      { title: 'Day A', blocks: [
+        { t: 'warm', n: 'Warm-up', d: 5, note: W_WARM },
+        { t: 'ex', n: 'Leg press', d: 4, how: 'Leg press machine, ~20–25 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Chest press', d: 4, how: 'Chest press machine, ~10–12 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Seated row', d: 4, how: 'Cable row machine, ~12–15 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Shoulder press', d: 4, how: 'Free hand (kettlebell), ~4–5 kg each', sr: '2 x 12' },
+        { t: 'ex', n: 'Plank', d: 4, how: 'Floor mat, bodyweight', sr: '3 x 20–30 sec hold' },
+        { t: 'cardio', n: 'Cardio', d: 20, note: W_CARDIO },
+        { t: 'cool', n: 'Cool-down', d: 5, note: COOL }
+      ]},
+      { title: 'Day B', blocks: [
+        { t: 'warm', n: 'Warm-up', d: 5, note: W_WARM },
+        { t: 'ex', n: 'Leg curl', d: 4, how: 'Leg curl machine, ~10–12 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Lat pulldown', d: 4, how: 'Lat pulldown machine, ~15–18 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Cable chest fly', d: 4, how: 'Cable crossover machine, ~5–7 kg per side', sr: '3 x 12' },
+        { t: 'ex', n: 'Bicep curl', d: 4, how: 'Free hand (kettlebell), ~4–5 kg each', sr: '2 x 12' },
+        { t: 'ex', n: 'Side plank', d: 4, how: 'Floor mat, bodyweight', sr: '2 x 20 sec each side' },
+        { t: 'cardio', n: 'Cardio', d: 20, note: W_CARDIO },
+        { t: 'cool', n: 'Cool-down', d: 5, note: COOL }
+      ]}
+    ]
+  },
+  {
+    name: 'Avishek', meta: '47 years, 5 ft 6 in, 70 kg',
+    sessions: [
+      { title: 'Day A', blocks: [
+        { t: 'warm', n: 'Warm-up', d: 7, note: M_WARM },
+        { t: 'ex', n: 'Leg press', d: 5, how: 'Leg press machine, ~30–35 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Chest press', d: 5, how: 'Chest press machine, ~15–18 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Seated row', d: 5, how: 'Cable row machine, ~18–20 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Shoulder press', d: 5, how: 'Free hand (kettlebell), ~6–8 kg each', sr: '3 x 10' },
+        { t: 'ex', n: 'Plank', d: 4, how: 'Floor mat, bodyweight', sr: '3 x 30 sec hold' },
+        { t: 'ex', n: 'Bicycle crunch', d: 4, how: 'Floor mat, bodyweight', sr: '3 x 15 each side' },
+        { t: 'cardio', n: 'Cardio', d: 10, note: 'Treadmill jog or incline walk intervals. Shorter block, strength is the priority at this age and build.' },
+        { t: 'cool', n: 'Cool-down', d: 5, note: COOL }
+      ]},
+      { title: 'Day B', blocks: [
+        { t: 'warm', n: 'Warm-up', d: 7, note: M_WARM },
+        { t: 'ex', n: 'Leg curl', d: 5, how: 'Leg curl machine, ~15–18 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Lat pulldown', d: 5, how: 'Lat pulldown machine, ~20–22 kg', sr: '3 x 12' },
+        { t: 'ex', n: 'Cable chest fly', d: 5, how: 'Cable crossover machine, ~7–9 kg per side', sr: '3 x 12' },
+        { t: 'ex', n: 'Bicep curl', d: 5, how: 'Free hand (kettlebell), ~6–8 kg each', sr: '3 x 10' },
+        { t: 'ex', n: 'Triceps extension', d: 4, how: 'Free hand (kettlebell), ~5–6 kg', sr: '3 x 10' },
+        { t: 'ex', n: 'Side plank', d: 4, how: 'Floor mat, bodyweight', sr: '2 x 25 sec each side' },
+        { t: 'cardio', n: 'Cardio', d: 10, note: 'Treadmill jog or incline walk intervals, or stairs. Shorter block, strength is the priority at this age and build.' },
+        { t: 'cool', n: 'Cool-down', d: 5, note: COOL }
+      ]}
+    ]
+  }
+];
+
+var REFS = {
+  'Leg press': {
+    intro: 'Leg press on the leg press machine:',
+    links: [
+      { kind: 'Doc', label: 'Doc: Leg press guide', url: 'https://www.womenshealthmag.com/uk/fitness/strength-training/a62032372/leg-press/' },
+      { kind: 'Video', label: 'Video: Leg press', url: 'https://www.youtube.com/watch?v=xfpxtFDcd1I' }
+    ]
+  },
+  'Chest press': {
+    intro: 'Chest press on the chest press machine:',
+    links: [
+      { kind: 'Doc', label: 'Doc: Chest press guide', url: 'https://www.repcountapp.com/exercises/chest-press' },
+      { kind: 'Video', label: 'Video: Chest press', url: 'https://www.youtube.com/watch?v=YwrzZaNqJWU' },
+      { kind: 'Video', label: 'Video: Chest press (short)', url: 'https://www.youtube.com/shorts/LYvKEi-I_fs' }
+    ]
+  },
+  'Seated row': {
+    intro: 'Seated row on the seated row machine:',
+    links: [
+      { kind: 'Doc', label: 'Doc: Seated machine row, close grip', url: 'https://www.nasm.org/resource-center/exercise-library/seated-machine-row-close-grip' },
+      { kind: 'Video', label: 'Video: Seated machine row', url: 'https://www.youtube.com/watch?v=k0cTJCfxa0Y' }
+    ]
+  }
+};
+
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function renderSession(s) {
+  var total = s.blocks.reduce(function (a, b) { return a + b.d; }, 0);
+  var sec = el('section', 'session');
+  var h = el('h3', null, s.title);
+  h.appendChild(el('span', null, total + ' min'));
+  sec.appendChild(h);
+
+  var scroll = el('div', 'scroll');
+  var line = el('div', 'line');
+  var labels = el('div', 'labels');
+  var bar = el('div', 'bar');
+  var num = 0;
+  var exStart = null, exEnd = 0, exCount = 0, t = 0;
+
+  s.blocks.forEach(function (b) {
+    var lab = el('div', null, b.t === 'ex' ? '' : b.n);
+    lab.style.flex = b.d + ' 0 0';
+    labels.appendChild(lab);
+    var seg = el('div', 'seg ' + b.t);
+    seg.style.flex = b.d + ' 0 0';
+    var tip = b.t === 'ex' ? (num + 1) + '. ' + b.n + ' | ' + b.how + ' | ' + b.sr + ' | ' + b.d + ' min' : b.n + ' | ' + b.note + ' | ' + b.d + ' min';
+    seg.title = tip;
+    if (b.t === 'ex') {
+      num += 1; exCount += 1;
+      seg.textContent = num;
+      if (exStart === null) exStart = t;
+      exEnd = t + b.d;
+    } else {
+      seg.setAttribute('aria-hidden', 'false');
+    }
+    seg.setAttribute('role', 'img');
+    seg.setAttribute('aria-label', tip);
+    bar.appendChild(seg);
+    t += b.d;
+  });
+  line.appendChild(labels);
+  line.appendChild(bar);
+
+  var axis = el('div', 'axis');
+  for (var m = 0; m <= total; m += 10) {
+    var tick = el('span', null, String(m));
+    tick.style.left = (m / total * 100) + '%';
+    axis.appendChild(tick);
+  }
+  line.appendChild(axis);
+  scroll.appendChild(line);
+  sec.appendChild(scroll);
+
+  var ol = el('ol', 'ex-list');
+  s.blocks.filter(function (b) { return b.t === 'ex'; }).forEach(function (b, i) {
+    var li = el('li');
+    li.appendChild(el('span', 'n', String(i + 1)));
+    li.appendChild(el('span', 'name', b.n));
+    li.appendChild(el('span', 'sr', b.sr));
+    li.appendChild(el('span', 'how', b.how));
+    var ref = REFS[b.n];
+    if (ref) {
+      var box = el('div', 'refs');
+      box.appendChild(el('span', 'refs-intro', ref.intro));
+      ref.links.forEach(function (l) {
+        var a = el('a', 'ref-link', l.label);
+        a.href = l.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.setAttribute('data-kind', l.kind);
+        box.appendChild(a);
+      });
+      li.appendChild(box);
+    }
+    ol.appendChild(li);
+  });
+  sec.appendChild(ol);
+
+  var blocks = el('div', 'blocks');
+  s.blocks.filter(function (b) { return b.t !== 'ex'; }).forEach(function (b) {
+    var p = el('div');
+    var strong = el('b', null, b.n + ', ' + b.d + ' min. ');
+    p.appendChild(strong);
+    p.appendChild(document.createTextNode(b.note));
+    blocks.appendChild(p);
+  });
+  sec.appendChild(blocks);
+  return sec;
+}
+
+var root = document.getElementById('people');
+people.forEach(function (p) {
+  var wrap = el('section', 'person');
+  var header = el('header');
+  header.appendChild(el('h2', null, p.name));
+  header.appendChild(el('p', null, p.meta));
+  wrap.appendChild(header);
+  p.sessions.forEach(function (s) { wrap.appendChild(renderSession(s)); });
+  root.appendChild(wrap);
+});
+</script>
