@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Amanishay Alo (অমানিশায় আলো)</title>
 <style>
-  :root { --bg: #ffffff; --fg: #1f2328; --muted: #656d76; --border: #d0d7de; --head: #f6f8fa; --note-bg: #fff8c5; --note-border: #d4a72c; --info-bg: #ddf4ff; --info-border: #218bff; --join-bg: #dafbe1; --join-border: #2da44e; --cook-bg: #ffe8cc; --cook-border: #f0883e; --dress-bg: #efe5ff; --dress-border: #8250df; }
-  :root[data-theme="night"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d; --head: #161b22; --note-bg: #7a6420; --note-border: #9e6a03; --info-bg: #2b61b8; --info-border: #388bfd; --join-bg: #2b7a4b; --join-border: #3fb950; --cook-bg: #8a5a1f; --cook-border: #f0883e; --dress-bg: #5a3d99; --dress-border: #a371f7; }
+  :root { --bg: #ffffff; --fg: #1f2328; --muted: #656d76; --border: #d0d7de; --head: #f6f8fa; --note-bg: #fff8c5; --note-border: #d4a72c; --info-bg: #ddf4ff; --info-border: #218bff; --join-bg: #dafbe1; --join-border: #2da44e; --cook-bg: #ffe8cc; --cook-border: #f0883e; --dress-bg: #efe5ff; --dress-border: #8250df; --sched-bg: #d6f2ed; --sched-border: #1a9e8f; }
+  :root[data-theme="night"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d; --head: #161b22; --note-bg: #7a6420; --note-border: #9e6a03; --info-bg: #2b61b8; --info-border: #388bfd; --join-bg: #2b7a4b; --join-border: #3fb950; --cook-bg: #8a5a1f; --cook-border: #f0883e; --dress-bg: #5a3d99; --dress-border: #a371f7; --sched-bg: #1f5f58; --sched-border: #3cc4b2; }
   body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, "Noto Sans Bengali", "Nirmala UI", "Kohinoor Bangla", "Shonar Bangla", sans-serif; background: var(--bg); color: var(--fg); max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.5; }
   h1 { font-size: 1.8rem; margin-bottom: 0.6rem; padding-right: 110px; }
   .meta { color: var(--muted); margin-bottom: 2rem; }
@@ -49,6 +49,19 @@
   .highlight.cook td { background: #ebbf8f; color: #1f2328; }
   :root[data-theme="night"] .highlight.cook th { background: #c2904f; }
   :root[data-theme="night"] .highlight.cook td { background: #c2904f; }
+  .highlight.sched { background: var(--sched-bg); border-left-color: var(--sched-border); }
+  mark.lbls { background: #5ed4c4; color: #1f2328; padding: 0 4px; border-radius: 3px; }
+  :root[data-theme="night"] mark.lbls { background: #7ee0d2; color: #1f2328; }
+  .highlight.sched table { margin: 0.6rem 0; }
+  .highlight.sched th, .highlight.sched td { border-color: var(--sched-border); background: #a9ddd4; color: #1f2328; }
+  :root[data-theme="night"] .highlight.sched th, :root[data-theme="night"] .highlight.sched td { background: #5aa89f; }
+  .highlight summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; user-select: none; }
+  .highlight summary::-webkit-details-marker { display: none; }
+  .highlight summary::after { content: "Hide ▲"; flex: none; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border: 1px solid currentColor; border-radius: 999px; opacity: 0.75; }
+  .highlight details:not([open]) > summary::after { content: "Show ▼"; }
+  .highlight summary:hover::after { opacity: 1; }
+  .highlight details > .body { margin-top: 0.5rem; }
+  .organiser { margin: 2.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-weight: 600; }
   .highlight.join { background: var(--join-bg); border-left-color: var(--join-border); }
   .highlight ul { margin: 0.3rem 0 0.8rem; }
   .highlight ul:last-child { margin-bottom: 0; }
@@ -58,27 +71,34 @@
 <body>
 <button id="theme-toggle" type="button" aria-label="Switch between day and night view">Night view</button>
 <h1>Amanishay Alo (অমানিশায় আলো)</h1>
-<p class="when"><strong>Planned date for the program:</strong> Saturday 14 Nov 2026, 13:30-20:30</p>
+<p class="when"><strong>Planned date for the program:</strong> Saturday 14 Nov 2026, 13:00-20:45</p>
 <div class="highlight alert"><strong>Note:</strong> Everyone who is performing, please join the rehearsal and be on time. It really helps us prepare well and finish within our time. Thank you 🙏</div>
 <div class="highlight">
-  <div style="margin-top:0.6rem"><mark class="rt">Next meetings</mark></div>
+<details open><summary><mark class="rt">Next meetings</mark></summary>
+<div class="body">
   <ul>
     <li><mark class="lbl"><strong>Cultural group:</strong></mark> <mark class="rt">Thu</mark> 12 Nov 2026, <mark class="rt">17:30</mark>-19:30, <mark class="rt">Näyttelijänkatu common room</mark>, <a href="https://goo.gl/maps/9tJJxcbSukYctJhP9" target="_blank" rel="noopener noreferrer">Google Maps</a>
       <ul><li><mark class="rt">This is the final rehearsal. Please join, everyone.</mark></li></ul>
     </li>
   </ul>
+</div></details>
 </div>
-<div class="highlight dress"><mark class="lbld"><strong>Dress code</strong></mark> It would be lovely if everyone wears a matching style. It will look beautiful and make the program a little more special.
+<div class="highlight dress">
+<details><summary><mark class="lbld"><strong>Dress code</strong></mark></summary>
+<div class="body"> It would be lovely if everyone wears a matching style. It will look beautiful and make the program a little more special.
   <ul class="key">
     <li><strong>Men:</strong> white panjabi (a light colour if you do not have white)</li>
     <li><strong>Women:</strong> saree</li>
     <li><strong>Kids:</strong> normal dress for the program, plus a “Jemon khushi temon shajo” (যেমন খুশি তেমন সাজো) costume for the dress-up activity</li>
   </ul>
-  Thank you for your cooperation.</div>
-<div class="highlight cook"><mark class="lblc"><strong>Who is cooking?</strong></mark> Here is the list showing who will prepare which item, and how the ingredients and other help are arranged. We will all help to prepare the food and curries.
+  Thank you for your cooperation.</div></details></div>
+<div class="highlight cook">
+<details><summary><mark class="lblc"><strong>Who is cooking?</strong></mark></summary>
+<div class="body"> Here is the list showing who will prepare which item, and how the ingredients and other help are arranged. We will all help to prepare the food and curries.
 <ul class="key">
   <li>All ingredients are to be delivered by 2 pm on Friday.</li>
-  <li>To keep the dishes consistent, we will send the YouTube cooking links.</li>
+  <li>Nobody needs to buy any ingredients.</li>
+  <li>To keep the dishes consistent, Badhan and Prabal will share the YouTube cooking links in the food group.</li>
 </ul>
 <table>
   <thead><tr><th>Responsibility</th><th>Responsible persons</th><th>Cooking for (each)</th></tr></thead>
@@ -96,15 +116,63 @@
     <tr><td>Mahalabia</td><td>Prabal</td><td>90</td></tr>
   </tbody>
 </table>
-Thank you in advance, everyone 🙏</div>
-<div class="highlight join"><mark class="lblj"><strong>Who is joining?</strong></mark> Everyone is part of the show, on stage or in the audience. Thank you to everyone who filled in the form. <mark class="rt">The form is now closed.</mark> We will prepare the food ourselves to minimise cost. The cost will be shared by all who are joining the program.</div>
-<div class="highlight info"><mark class="lblp"><strong>Who wants to perform?</strong></mark> Sing, dance, recite or act, whatever you love, and make the evening special! <mark class="rt">We need to finalise the items in the list</mark>, so please check and update your performance details: <mark class="lblp"><a href="https://docs.google.com/spreadsheets/d/11ojRbeUaVkyWZeXnvUWRNEUY9TmxRQRyVGsRqNiKI1s/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">Open the sign-up sheet</a></mark>. To edit on a phone, install the <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets&amp;pcampaignid=web_share" target="_blank" rel="noopener noreferrer">Google Sheets app</a>.</div>
+Thank you in advance, everyone 🙏</div></details></div>
+<div class="highlight sched" id="planned-schedule">
+<details><summary><mark class="lbls"><strong>Planned Schedule</strong></mark></summary>
+<div class="body">
+<p style="margin:0.6rem 0 0"><strong>Things to note!</strong></p>
+<ul class="key">
+  <li>Rehearse before joining the stage.</li>
+  <li>School for kids: use indoor shoes inside, keep outdoor shoes outside.</li>
+</ul>
+<table>
+  <thead><tr><th>Time</th><th>Activity</th><th>Team</th></tr></thead>
+  <tbody>
+    <tr><td>13:00-14:00</td><td>Decoration and venue arrangement</td><td>Decoration, Program Arrangement</td></tr>
+    <tr><td>14:00-18:00</td><td>Cultural program, with activities for kids and adults, including a snacks break in the middle</td><td>Cultural group, Entertainment, Kids activities, Food arrangement</td></tr>
+    <tr><td>18:00-19:00</td><td>Dinner</td><td>Food arrangement, Program Arrangement</td></tr>
+    <tr><td>19:00-20:00</td><td>Program for adults</td><td>Entertainment</td></tr>
+    <tr><td>20:00-20:30</td><td>Cleaning</td><td>Program Arrangement</td></tr>
+    <tr><td>20:45</td><td>Out of the venue</td><td>-</td></tr>
+  </tbody>
+</table></div></details></div>
+<div class="highlight join">
+<details><summary><mark class="lblj"><strong>Who is joining?</strong></mark></summary>
+<div class="body"> Everyone is part of the show, on stage or in the audience. Thank you to everyone who filled in the form. <mark class="rt">The form is now closed.</mark> We will prepare the food ourselves to minimise cost. The cost will be shared by all who are joining the program.</div></details></div>
+<div class="highlight info">
+<details><summary><mark class="lblp"><strong>Who wants to perform?</strong></mark></summary>
+<div class="body"> Sing, dance, recite or act, whatever you love, and make the evening special! <mark class="rt">We need to finalise the items in the list</mark>, so please check and update your performance details: <mark class="lblp"><a href="https://docs.google.com/spreadsheets/d/11ojRbeUaVkyWZeXnvUWRNEUY9TmxRQRyVGsRqNiKI1s/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">Open the sign-up sheet</a></mark>. To edit on a phone, install the <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.docs.editors.sheets&amp;pcampaignid=web_share" target="_blank" rel="noopener noreferrer">Google Sheets app</a>.</div></details></div>
 
+<h2 id="planning-summary">Planning Summary</h2>
+
+<h3>Teams (Anyone wants to work in any team, please let us know to the respective coordinator)</h3>
+<p>Eight teams are assigned.</p>
+<table>
+  <thead><tr><th>Team</th><th>Members</th></tr></thead>
+  <tbody>
+    <tr><td>Cultural group</td><td>Bably (Coordinator), Debabrata (Tohtorinkatu), Deepa, Pinky, Prabal. Next meeting, Cultural group: Thu 12 Nov 2026, 17:30-19:30, Näyttelijänkatu common room, <a href="https://goo.gl/maps/9tJJxcbSukYctJhP9" target="_blank" rel="noopener noreferrer">Google Maps</a>.</td></tr>
+    <tr><td>Decoration</td><td>Arpita, Debabrata (Tohtorinkatu), Jeesa, Pinky, Shuvo, Sopneel, Sristy, Sutopa (Coordinator).</td></tr>
+    <tr><td>Kids activities</td><td>Arju, Arpita (Coordinator), Shanta, Sutopa. Activity 1: dress up however you like.</td></tr>
+    <tr><td>Food arrangement</td><td>Badhan (Coordinator), Hasnat, Prabal, Rifat, Suvasish</td></tr>
+    <tr><td>Entertainment</td><td>Ayesha, Nabila, Regan, Shakila (Coordinator), Sohag, Yeasin</td></tr>
+    <tr><td>Supporting team</td><td>Apu, Avishek (Coordinator), Debabrata (Naytteleiankatu), Sanchayan</td></tr>
+    <tr><td>Sound system</td><td>Avishek, Sagor (Coordinator)</td></tr>
+    <tr><td>Program Arrangement</td><td>Apu, Avishek (Coordinator), Debabrata, Hasnat, Mahbub, Preetom, Sanchayan, Shuvo, and more (names to be added)</td></tr>
+  </tbody>
+</table>
+
+<h3>Things to note!</h3>
+<ul>
+  <li>Rehearse before joining the stage.</li>
+  <li>Test the speakers and mics before the program begins.</li>
+  <li>Keep drinking water inside the hall.</li>
+  <li>School for kids: use indoor shoes inside, keep outdoor shoes outside.</li>
+</ul>
 <h2>Updates</h2>
 <ul>
   <li><strong>Tue 20 Oct 2026, 18:00-20:00, Näyttelijänkatu common room</strong>
     <ul>
-      <li><a href="#planning-summary">Planning Summary</a></li>
+      <li>Planning Summary</li>
     </ul>
   </li>
   <li><strong>Wed 28 Oct 2026, 17:30-19:30, Näyttelijänkatu common room</strong>
@@ -141,45 +209,7 @@ Thank you in advance, everyone 🙏</div>
     </ul>
   </li>
 </ul>
-
-<h2 id="planning-summary">Planning Summary</h2>
-
-<h3 id="planned-schedule">Planned Schedule</h3>
-<table>
-  <thead><tr><th>Time</th><th>Activity</th><th>Team</th></tr></thead>
-  <tbody>
-    <tr><td>13:30-15:00</td><td>Decoration and venue arrangement</td><td>Decoration, Program Arrangement</td></tr>
-    <tr><td>14:00-15:00</td><td>Snacks</td><td>Food arrangement, Program Arrangement</td></tr>
-    <tr><td>15:00-18:30</td><td>Cultural program, with activities for kids and adults</td><td>Cultural group, Entertainment, Kids activities</td></tr>
-    <tr><td>18:30-19:30</td><td>Dinner</td><td>Food arrangement, Program Arrangement</td></tr>
-    <tr><td>19:30-20:15</td><td>Cleaning</td><td>Program Arrangement</td></tr>
-    <tr><td>20:30</td><td>Out of the venue</td><td>-</td></tr>
-  </tbody>
-</table>
-
-<h3>Teams (Anyone wants to work in any team, please let us know to the respective coordinator)</h3>
-<p>Eight teams are assigned.</p>
-<table>
-  <thead><tr><th>Team</th><th>Members</th></tr></thead>
-  <tbody>
-    <tr><td>Cultural group</td><td>Bably (Coordinator), Debabrata (Tohtorinkatu), Deepa, Pinky, Prabal. Next meeting, Cultural group: Thu 12 Nov 2026, 17:30-19:30, Näyttelijänkatu common room, <a href="https://goo.gl/maps/9tJJxcbSukYctJhP9" target="_blank" rel="noopener noreferrer">Google Maps</a>.</td></tr>
-    <tr><td>Decoration</td><td>Arpita, Debabrata (Tohtorinkatu), Jeesa, Pinky, Shuvo, Sopneel, Sristy, Sutopa (Coordinator).</td></tr>
-    <tr><td>Kids activities</td><td>Arju, Arpita (Coordinator), Shanta, Sutopa. Activity 1: dress up however you like.</td></tr>
-    <tr><td>Food arrangement</td><td>Badhan (Coordinator), Hasnat, Prabal, Rifat, Suvasish</td></tr>
-    <tr><td>Entertainment</td><td>Ayesha, Nabila, Regan, Shakila (Coordinator), Sohag, Yeasin</td></tr>
-    <tr><td>Supporting team</td><td>Apu, Avishek (Coordinator), Debabrata (Naytteleiankatu), Sanchayan</td></tr>
-    <tr><td>Sound system</td><td>Avishek, Sagor (Coordinator)</td></tr>
-    <tr><td>Program Arrangement</td><td>Apu, Avishek (Coordinator), Debabrata, Hasnat, Mahbub, Preetom, Sanchayan, Shuvo, and more (names to be added)</td></tr>
-  </tbody>
-</table>
-
-<h3>Things to note!</h3>
-<ul>
-  <li>Rehearse before joining the stage.</li>
-  <li>Test the speakers and mics before the program begins.</li>
-  <li>Keep drinking water inside the hall.</li>
-  <li>School for kids: use indoor shoes inside, keep outdoor shoes outside.</li>
-</ul>
+<p class="organiser">Organised by Udoy</p>
 <script>
 (function () {
   var root = document.documentElement, btn = document.getElementById('theme-toggle');
