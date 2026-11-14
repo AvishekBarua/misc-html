@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Udoy Team Draw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a polished game-show draw, bright and friendly, clear from across a room
+   IDEA: the classic prize wheel with a lit rim, flanked by two team boards
+   PICTURE: the wheel, large and central, gold pin on top, bulbs around the rim
+   COLOUR and TYPE: soft white stage, team red and team blue, gold pin; Plus Jakarta Sans with Baloo Da 2 for Bengali
+   LAYOUT: red board | wheel | blue board; on small screens wheel first, boards below */
+:root{color-scheme:light dark;
+  --bg:light-dark(#f4f3f8,#111018);--panel:light-dark(#ffffff,#1b1a24);--ink:light-dark(#1a1726,#f2f0f8);
+  --mute:light-dark(#6e6a7c,#a19cb0);--line:light-dark(#e6e3ee,#2c2a38);--soft:light-dark(#f7f6fb,#22202d);
+  --red:#e5383b;--blue:#2563eb;--gold:#f5b301;--shadow:light-dark(0 10px 30px rgba(40,30,80,.10),0 10px 30px rgba(0,0,0,.45))}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Plus Jakarta Sans","Baloo Da 2",system-ui,sans-serif;overflow-x:clip}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:16px max(3vw,16px);border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:44px;height:44px;flex:none}
+h1{font-size:clamp(22px,2.4vw,30px);line-height:1.05;margin:0;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--mute);font-size:14px;margin:2px 0 0}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tool{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:12px;min-height:44px;padding:0 14px;cursor:pointer;transition:background .15s,border-color .15s}
+.tool svg{width:18px;height:18px;flex:none}
+.tool:hover:not(:disabled){border-color:var(--mute)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,canvas:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(620px,44vw)) minmax(0,1fr);gap:clamp(16px,2.4vw,32px);padding:clamp(18px,2.5vw,32px) max(3vw,16px);align-items:start;max-width:1700px;margin:0 auto}
+.center{display:flex;flex-direction:column;align-items:center;gap:16px}
+.wheelbox{position:relative;width:100%;aspect-ratio:1;filter:drop-shadow(0 18px 28px rgba(30,20,70,.25))}
+.wheelbox canvas{position:absolute;inset:0;width:100%;height:100%;cursor:pointer;border-radius:50%}
+.pin{position:absolute;left:50%;top:-14px;width:54px;height:66px;margin-left:-27px;z-index:2;transform-origin:50% 22%;transition:transform .12s ease-out;filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))}
+.pin.tick{transform:rotate(-16deg);transition:none}
+.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{font:inherit;font-weight:800;font-size:20px;border-radius:999px;min-height:58px;padding:0 34px;cursor:pointer;border:0;transition:transform .1s,box-shadow .1s}
+.btn.primary{background:linear-gradient(180deg,#ffc933,#f5a300);color:#2b1d00;box-shadow:0 5px 0 #c27f00,0 10px 20px rgba(245,163,0,.35)}
+.btn.primary:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 #c27f00}
+.btn.ghost{background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line),var(--shadow)}
+.btn.ghost:hover:not(:disabled){box-shadow:inset 0 0 0 2px var(--mute),var(--shadow)}
+.result{min-height:44px;text-align:center;font-size:clamp(18px,2vw,26px);line-height:1.2;font-weight:700}
+.result b{font-weight:800}
+.chip{display:inline-block;color:#fff;border-radius:999px;padding:1px 14px;font-weight:800;white-space:nowrap}
+.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.7);opacity:0}100%{transform:none;opacity:1}}
+.progress{width:min(100%,460px)}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;display:flex}
+.bar i{display:block;height:100%;transition:width .3s}
+.bar .r{background:var(--red)}.bar .b{background:var(--blue)}
+.ptext{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-top:6px;font-variant-numeric:tabular-nums}
+.team{background:var(--panel);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line)}
+.team .hd{display:flex;align-items:center;gap:12px;padding:16px 18px;color:#fff}
+.team.r .hd{background:linear-gradient(135deg,#f0524f,#c9202a)}
+.team.b .hd{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.team input{flex:1;font:inherit;font-size:22px;font-weight:800;color:#fff;background:transparent;border:0;border-bottom:2px solid rgba(255,255,255,.35);padding:2px 0;border-radius:0}
+.team input:hover{border-bottom-color:rgba(255,255,255,.7)}
+.count{min-width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.team ol{list-style:none;margin:0;padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;counter-reset:n}
+.team li{counter-increment:n;display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:12px;background:var(--soft);font-weight:700;font-size:16px;line-height:1.25}
+.team li::before{content:counter(n);flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#fff}
+.team.r li::before{background:var(--red)}.team.b li::before{background:var(--blue)}
+.team li.new{animation:flash 1.4s ease-out}
+.team.r li.new{--f:rgba(229,56,59,.28)}.team.b li.new{--f:rgba(37,99,235,.28)}
+@keyframes flash{0%{background:var(--f);transform:scale(1.06)}100%{background:var(--soft);transform:none}}
+.empty{color:var(--mute);padding:22px 18px;font-size:15px;text-align:center}
+.more{max-width:1700px;margin:0 auto;padding:0 max(3vw,16px) 32px;display:grid;gap:12px}
+details{border:1px solid var(--line);border-radius:16px;padding:12px 18px;background:var(--panel)}
+summary{cursor:pointer;font-weight:700;min-height:28px}
+textarea{width:100%;font:16px/1.45 "Plus Jakarta Sans","Baloo Da 2",system-ui,sans-serif;min-height:220px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--soft);color:var(--ink);margin:8px 0}
+.note{font-size:14px;color:var(--mute);margin:6px 0 0}
+.overlay{position:fixed;inset:0;background:rgba(15,10,30,.55);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:20;padding:20px}
+.overlay[hidden]{display:none}
+.card{background:var(--panel);border-radius:24px;width:min(460px,100%);overflow:hidden;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.card .band{height:12px}
+.card .in{padding:26px 24px 24px}
+.card .lab{color:var(--mute);font-weight:700;font-size:15px;margin:0}
+.card .who{font-size:clamp(32px,6vw,48px);font-weight:800;line-height:1.05;margin:8px 0 14px;text-wrap:balance}
+.card .chip{font-size:22px;padding:4px 20px}
+.card .btn{margin-top:22px;min-height:50px;font-size:18px}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
+@media(max-width:960px){.stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.center{grid-column:1/-1;order:-1}.wheelbox{max-width:540px}}
+@media(max-width:560px){.stage{grid-template-columns:minmax(0,1fr)}.tool span{display:none}.btn{padding:0 24px;font-size:18px}.team ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.pop,.team li.new{animation:none}.pin,.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#1a1726"/><path d="M22 22 22 3A19 19 0 0 1 41 22Z" fill="#e5383b"/><path d="M22 22 41 22A19 19 0 0 1 22 41Z" fill="#f5b301"/><path d="M22 22 22 41A19 19 0 0 1 3 22Z" fill="#2563eb"/><path d="M22 22 3 22A19 19 0 0 1 22 3Z" fill="#10b981"/><circle cx="22" cy="22" r="5" fill="#fff"/></svg>
+    <div><h1>Udoy Team Draw</h1><p class="sub">Spin the wheel to split everyone into two balanced teams</p></div>
+  </div>
+  <div class="tools">
+    <button class="tool" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span>Undo</span></button>
+    <button class="tool" id="copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copy teams</span></button>
+    <button class="tool" id="reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span>Reset</span></button>
+    <button class="tool" id="fs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>Full screen</span></button>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="team r" aria-label="Team 1">
+    <div class="hd"><input id="t0" value="Red Team" aria-label="Team 1 name"><span class="count" id="c0">0</span></div>
+    <div id="l0"></div>
+  </section>
+
+  <section class="center">
+    <div class="wheelbox" id="box">
+      <svg class="pin" id="pin" viewBox="0 0 54 66" aria-hidden="true"><defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd54a"/><stop offset="1" stop-color="#e79a00"/></linearGradient></defs><path d="M27 64 7 30a22 22 0 1 1 40 0Z" fill="url(#pg)" stroke="#5a3b00" stroke-width="3" stroke-linejoin="round"/><circle cx="27" cy="22" r="8" fill="#fff" stroke="#5a3b00" stroke-width="3"/></svg>
+      <canvas id="cv" tabindex="0" aria-label="Wheel of names. Click to spin."></canvas>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="spin">Spin · ঘোরাও</button>
+      <button class="btn ghost" id="all">Draw everyone</button>
+    </div>
+    <div class="result" id="result" aria-live="polite">Click Spin, the wheel, or press the space bar</div>
+    <div class="progress">
+      <div class="bar"><i class="r" id="br"></i><i class="b" id="bb"></i></div>
+      <div class="ptext"><span id="pl"></span><span id="pr"></span></div>
+    </div>
+  </section>
+
+  <section class="team b" aria-label="Team 2">
+    <div class="hd"><input id="t1" value="Blue Team" aria-label="Team 2 name"><span class="count" id="c1">0</span></div>
+    <div id="l1"></div>
+  </section>
+</main>
+
+<div class="more">
+  <details>
+    <summary>Edit names</summary>
+    <p class="note">One name per line. Using a new list starts a fresh draw. Refreshing the page goes back to the original list.</p>
+    <textarea id="names" spellcheck="false"></textarea>
+    <button class="tool" id="save">Use these names</button>
+  </details>
+  <details id="copybox" hidden>
+    <summary>Team lists as text</summary>
+    <textarea id="copytext" readonly></textarea>
+  </details>
+</div>
+
+<div class="overlay" id="ov" hidden>
+  <div class="card pop" role="dialog" aria-modal="true" aria-labelledby="who">
+    <div class="band" id="band"></div>
+    <div class="in">
+      <p class="lab">The wheel has chosen</p>
+      <div class="who" id="who"></div>
+      <span class="chip" id="wteam"></span>
+      <div><button class="btn primary" id="ok">Next</button></div>
+    </div>
+  </div>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script>
+{
+const DEFAULT = `Avishek
+Deepa
+Subasish
+Srishti
+Yeasin
+Ayesha
+Jyote
+Mrs Jyoti
+Shamim
+Mrs Shamim (Jui)
+Sanchayan
+Arpita
+Preetam
+Shaily
+Bably
+Prabal
+Dabubrata
+Sutopa
+Pinky
+Apu
+Swapnil
+Shuvo
+Imtiaz Ahmed
+Prosha
+Debabrata
+Jui
+Imtiaz B Ahsan
+Mrs Imtiaz
+Badhon
+Heera
+Jeesa
+Sagor
+John
+Mrs John
+Ashima
+Rifat
+Shakila
+Nargis
+Nadeem
+Regan
+Shanta
+Mina
+Hasnat
+Jinnat
+Tumpa
+Milan
+Pia
+Tusti
+Ranjan
+Arju
+Nabila
+Shohag
+Shawon
+Kabir
+Mrs Kabir
+Sajid
+Fahim`;
+const $ = id => document.getElementById(id);
+const SEG = [["#ef4444","#fff"],["#f59e0b","#3a2300"],["#10b981","#fff"],["#3b82f6","#fff"],["#8b5cf6","#fff"],["#ec4899","#fff"],["#14b8a6","#fff"],["#f97316","#fff"]];
+const TEAMCOL = ["#e5383b","#2563eb"];
+const FONT = '"Plus Jakarta Sans","Baloo Da 2",sans-serif';
+const TAU = Math.PI*2;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const parse = t => t.split("\n").map(s => s.trim()).filter(Boolean);
+const esc = s => s.replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const mix = (hex, w) => { const n = parseInt(hex.slice(1),16); const f = v => Math.round(v + (255-v)*w); return `rgb(${f(n>>16)},${f(n>>8&255)},${f(n&255)})`; };
+
+const fresh = list => ({source:list, remaining:[...list], teams:[[],[]], names:[S?S.names[0]:"Red Team", S?S.names[1]:"Blue Team"], history:[]});
+let S = null; S = fresh(parse(DEFAULT));
+let rot = 0, spinning = false, auto = false, skip = false, landed = null, lastNew = null, resetArm = 0, bulbPhase = 0, lastSeg = -1, modalTimer = 0;
+const cv = $("cv"), ctx = cv.getContext("2d"), box = $("box"), pin = $("pin");
+
+function draw(){
+  const dpr = window.devicePixelRatio || 1, size = box.clientWidth;
+  if (!size) return;
+  if (cv.width !== Math.round(size*dpr)) cv.width = cv.height = Math.round(size*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,size,size);
+  const c = size/2, R = c - 2, rim = Math.max(10, R*0.065), r = R - rim, list = S.remaining, n = list.length;
+  // rim
+  const rg = ctx.createRadialGradient(c,c,r,c,c,R);
+  rg.addColorStop(0,"#2a2440"); rg.addColorStop(.5,"#3b3358"); rg.addColorStop(1,"#1a1528");
+  ctx.beginPath(); ctx.arc(c,c,R,0,TAU); ctx.fillStyle = rg; ctx.fill();
+  const bulbs = 28;
+  for (let i=0;i<bulbs;i++){
+    const a = i/bulbs*TAU, x = c + Math.cos(a)*(r+rim/2), y = c + Math.sin(a)*(r+rim/2), on = (i + bulbPhase) % 2 === 0;
+    ctx.beginPath(); ctx.arc(x,y,rim*0.26,0,TAU);
+    ctx.fillStyle = on ? "#fff4c2" : "#8a7a4a"; ctx.shadowColor = on ? "rgba(255,220,120,.9)" : "transparent"; ctx.shadowBlur = on ? rim*0.8 : 0; ctx.fill();
+  }
+  ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+  if (!n){
+    const g = ctx.createRadialGradient(c,c,0,c,c,r); g.addColorStop(0,"#ffe08a"); g.addColorStop(1,"#f5a300");
+    ctx.beginPath(); ctx.arc(c,c,r,0,TAU); ctx.fillStyle = g; ctx.fill();
+    ctx.fillStyle = "#3a2300"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = `800 ${Math.round(size/15)}px ${FONT}`; ctx.fillText("Teams are ready!", c, c);
+    return;
+  }
+  const seg = TAU/n, fs = Math.max(9, Math.min(22, seg*r*0.6, size/24));
+  for (let i=0;i<n;i++){
+    let k = i % SEG.length; if (i === n-1 && n > 1 && n % SEG.length === 1) k = (k+3) % SEG.length;
+    const a0 = rot + i*seg - Math.PI/2, base = SEG[k][0];
+    const g = ctx.createRadialGradient(c,c,r*0.1,c,c,r); g.addColorStop(0, mix(base,.35)); g.addColorStop(.75, base); g.addColorStop(1, base);
+    ctx.beginPath(); ctx.moveTo(c,c); ctx.arc(c,c,r,a0,a0+seg); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+    ctx.lineWidth = n > 40 ? 1 : 2; ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.stroke();
+    ctx.save(); ctx.translate(c,c); ctx.rotate(a0+seg/2);
+    ctx.fillStyle = SEG[k][1]; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    let f = fs; ctx.font = `700 ${f}px ${FONT}`;
+    while (ctx.measureText(list[i]).width > r*0.68 && f > 8) { f -= 1; ctx.font = `700 ${f}px ${FONT}`; }
+    ctx.fillText(list[i], r - 14, 1); ctx.restore();
+  }
+  if (landed !== null){
+    const a0 = rot + landed*seg - Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(c,c); ctx.arc(c,c,r,a0,a0+seg); ctx.closePath();
+    ctx.lineWidth = 4; ctx.strokeStyle = "#fff"; ctx.stroke();
+    ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.fill();
+  }
+  // gloss
+  const gl = ctx.createLinearGradient(0,c-r,0,c+r); gl.addColorStop(0,"rgba(255,255,255,.18)"); gl.addColorStop(.5,"rgba(255,255,255,0)");
+  ctx.beginPath(); ctx.arc(c,c,r,0,TAU); ctx.fillStyle = gl; ctx.fill();
+  // hub
+  const hr = r*0.17, hg = ctx.createRadialGradient(c-hr*.3,c-hr*.3,hr*.1,c,c,hr);
+  hg.addColorStop(0,"#ffffff"); hg.addColorStop(1,"#dcd8e6");
+  ctx.beginPath(); ctx.arc(c,c,hr+5,0,TAU); ctx.fillStyle = "#f5b301"; ctx.fill();
+  ctx.beginPath(); ctx.arc(c,c,hr,0,TAU); ctx.fillStyle = hg; ctx.fill();
+  ctx.fillStyle = "#1a1726"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const left = n - (landed !== null ? 1 : 0);
+  ctx.font = `800 ${Math.round(hr*0.62)}px ${FONT}`; ctx.fillText(left, c, c - hr*0.12);
+  ctx.font = `700 ${Math.round(hr*0.24)}px ${FONT}`; ctx.fillStyle = "#6e6a7c"; ctx.fillText("left", c, c + hr*0.42);
+}
+
+function render(){
+  for (let t=0;t<2;t++){
+    $("c"+t).textContent = S.teams[t].length;
+    if (document.activeElement !== $("t"+t)) $("t"+t).value = S.names[t];
+    $("l"+t).innerHTML = S.teams[t].length
+      ? `<ol>${S.teams[t].map(n => `<li class="${n===lastNew?"new":""}">${esc(n)}</li>`).join("")}</ol>`
+      : `<div class="empty">No one yet. Spin the wheel!</div>`;
+  }
+  const total = S.source.length, a = S.teams[0].length, b = S.teams[1].length, left = total - a - b;
+  $("br").style.width = (total ? a/total*100 : 0) + "%"; $("bb").style.width = (total ? b/total*100 : 0) + "%";
+  $("pl").textContent = `${a+b} of ${total} drawn`; $("pr").textContent = left ? `${left} to go` : "All done";
+  $("spin").disabled = spinning || auto || left === 0;
+  $("all").disabled = !auto && (spinning || left === 0);
+  if (!skip) $("all").textContent = auto ? "Skip to the end" : "Draw everyone";
+  $("undo").disabled = spinning || auto || !S.history.length;
+  $("reset").disabled = auto; $("save").disabled = auto;
+  draw();
+}
+
+const pickTeam = () => { const a = S.teams[0].length, b = S.teams[1].length; return a === b ? (Math.random() < .5 ? 0 : 1) : (a < b ? 0 : 1); };
+function flush(){ if (landed !== null){ S.remaining.splice(landed,1); landed = null; } }
+function line(html){ const el = $("result"); el.innerHTML = html; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+const chip = t => `<span class="chip" style="background:${TEAMCOL[t]}">${esc(S.names[t])}</span>`;
+
+function tick(){ if (reduce) return; pin.classList.add("tick"); requestAnimationFrame(() => requestAnimationFrame(() => pin.classList.remove("tick"))); }
+
+function spinOnce(dur){
+  return new Promise(res => {
+    flush();
+    const n = S.remaining.length; if (!n) { render(); return res(null); }
+    const idx = Math.floor(Math.random()*n), seg = TAU/n;
+    const target = -(idx+.5)*seg + (Math.random()-.5)*seg*0.7;
+    const delta = ((target - rot) % TAU + TAU) % TAU;
+    const turns = reduce ? 0 : dur >= 1500 ? 3 : 1;
+    if (reduce) dur = Math.min(dur, 400);
+    const start = rot, end = rot + TAU*turns + delta, t0 = performance.now();
+    spinning = true; lastSeg = -1; render();
+    const step = now => {
+      const p = Math.min(1,(now-t0)/dur), e = 1 - (1-p)**3;
+      rot = start + (end-start)*e;
+      const s = Math.floor((((-rot) % TAU + TAU) % TAU) / seg);
+      if (s !== lastSeg) { if (lastSeg !== -1) tick(); lastSeg = s; }
+      bulbPhase = Math.floor(now/140) % 2; draw();
+      if (p < 1) return requestAnimationFrame(step);
+      rot = ((end % TAU)+TAU)%TAU; spinning = false; bulbPhase = 0;
+      const name = S.remaining[idx], t = pickTeam();
+      S.teams[t].push(name); S.history.push({name,t}); landed = idx; lastNew = name;
+      line(`<b>${esc(name)}</b> joins ${chip(t)}`); render(); res({name,t});
+    };
+    requestAnimationFrame(step);
+  });
+}
+function instantRest(){
+  flush();
+  const rest = [...S.remaining];
+  for (let i=rest.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [rest[i],rest[j]] = [rest[j],rest[i]]; }
+  rest.forEach(name => { const t = pickTeam(); S.teams[t].push(name); S.history.push({name,t}); });
+  S.remaining = []; lastNew = null;
+}
+
+function openModal(name, t){
+  $("who").textContent = name; $("wteam").textContent = "joins " + S.names[t];
+  $("wteam").style.background = TEAMCOL[t]; $("band").style.background = TEAMCOL[t];
+  $("ov").hidden = false; $("ok").focus(); confetti(60, TEAMCOL[t]);
+  clearTimeout(modalTimer); modalTimer = setTimeout(closeModal, 3000);
+}
+function closeModal(){ clearTimeout(modalTimer); if (!$("ov").hidden){ $("ov").hidden = true; $("spin").focus(); } }
+$("ok").onclick = closeModal;
+$("ov").addEventListener("click", e => { if (e.target === $("ov")) closeModal(); });
+
+async function spin(){
+  if (spinning || auto) return; closeModal(); resetArm = 0;
+  if (!S.remaining.length || S.remaining.length === 1 && landed !== null) return;
+  $("result").textContent = "Spinning…";
+  const r = await spinOnce(1800);
+  if (r) openModal(r.name, r.t);
+  if (r && S.remaining.length === 1) setTimeout(() => confetti(160), 400);
+}
+$("spin").onclick = spin;
+cv.addEventListener("click", spin);
+
+$("all").onclick = async () => {
+  if (auto) { skip = true; $("all").textContent = "Skipping…"; return; }
+  if (spinning) return; closeModal(); flush(); resetArm = 0;
+  if (!S.remaining.length) return;
+  auto = true; skip = false; render();
+  for (const k of ["Get ready…","3","2","1"]) { if (skip) break; line(`<b style="font-size:1.6em">${k}</b>`); await wait(k.length > 1 ? 900 : 750); }
+  while (!skip && S.remaining.length - (landed !== null ? 1 : 0) > 0) {
+    flush();
+    const left = S.remaining.length;
+    if (left <= 3) { line(left === 1 ? "And the very last one…" : `Only ${left} left…`); await wait(1100); if (skip) break; }
+    await spinOnce(left > 8 ? 420 : left > 3 ? 900 : 2000);
+    await wait(left > 8 ? 160 : left > 3 ? 600 : 900);
+  }
+  if (skip) instantRest();
+  auto = false; skip = false;
+  line(`Everyone is in! ${chip(0)} ${S.teams[0].length} vs ${S.teams[1].length} ${chip(1)}`);
+  render(); confetti(220);
+};
+$("undo").onclick = () => {
+  if (spinning || auto || !S.history.length) return; closeModal(); flush(); resetArm = 0;
+  const h = S.history.pop(); const arr = S.teams[h.t]; arr.splice(arr.lastIndexOf(h.name),1);
+  S.remaining.push(h.name); lastNew = null;
+  line(`<b>${esc(h.name)}</b> is back on the wheel`); render();
+};
+$("reset").onclick = () => {
+  if (spinning || auto) return;
+  const lab = $("reset").querySelector("span");
+  if (!resetArm){ resetArm = 1; lab.textContent = "Click again to reset"; setTimeout(()=>{ resetArm = 0; lab.textContent = "Reset"; }, 3000); return; }
+  resetArm = 0; lab.textContent = "Reset"; closeModal();
+  S = fresh(S.source); landed = null; lastNew = null;
+  line("Fresh start. Spin when ready"); render();
+};
+const teamText = () => S.teams.map((list,t) => `*${S.names[t]}* (${list.length})\n` + list.map((n,i)=>`${i+1}. ${n}`).join("\n")).join("\n\n");
+$("copy").onclick = async () => {
+  const txt = teamText(), lab = $("copy").querySelector("span"); $("copytext").value = txt; $("copybox").hidden = false;
+  try { await navigator.clipboard.writeText(txt); lab.textContent = "Copied!"; }
+  catch(e) { $("copybox").open = true; $("copytext").select(); lab.textContent = "Copy from the box below"; }
+  setTimeout(()=>{ lab.textContent = "Copy teams"; }, 2500);
+};
+$("fs").onclick = async () => {
+  const lab = $("fs").querySelector("span");
+  try { document.fullscreenElement ? await document.exitFullscreen() : await document.documentElement.requestFullscreen(); }
+  catch(e) { lab.textContent = "Not available here"; setTimeout(()=>{ lab.textContent = "Full screen"; }, 2500); }
+};
+$("names").value = S.source.join("\n");
+$("save").onclick = () => {
+  const list = parse($("names").value); if (!list.length) return;
+  closeModal(); S = fresh(list); landed = null; lastNew = null;
+  line(`${list.length} names loaded. Spin when ready`); render();
+};
+[0,1].forEach(t => $("t"+t).addEventListener("input", e => { S.names[t] = e.target.value.trim() || (t ? "Blue Team" : "Red Team"); }));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") return closeModal();
+  if ((e.code === "Space" || e.key === "Enter") && !/INPUT|TEXTAREA|SUMMARY/.test(e.target.tagName) && (e.target.tagName !== "BUTTON" || e.target === $("ok"))) {
+    e.preventDefault(); if (!$("ov").hidden) closeModal(); else spin();
+  }
+});
+
+// confetti
+const fx = $("fx"), fc = fx.getContext("2d"); let parts = [], fxOn = false;
+function confetti(count, colour){
+  if (reduce) return;
+  const W = fx.width = innerWidth, H = fx.height = innerHeight;
+  const cols = colour ? [colour, "#f5b301", "#ffffff"] : ["#e5383b","#2563eb","#f5b301","#10b981","#ec4899","#8b5cf6"];
+  for (let i=0;i<count;i++) parts.push({x:W/2 + (Math.random()-.5)*W*0.3, y:H*0.35, vx:(Math.random()-.5)*14, vy:-Math.random()*14-4, s:6+Math.random()*6, a:Math.random()*TAU, va:(Math.random()-.5)*.3, c:cols[i%cols.length], life:0});
+  if (!fxOn){ fxOn = true; requestAnimationFrame(fxStep); }
+}
+function fxStep(){
+  fc.clearRect(0,0,fx.width,fx.height);
+  parts = parts.filter(p => p.life < 160 && p.y < fx.height + 20);
+  for (const p of parts){
+    p.life++; p.vy += 0.32; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+    fc.save(); fc.translate(p.x,p.y); fc.rotate(p.a); fc.fillStyle = p.c; fc.globalAlpha = Math.max(0, 1 - p.life/160);
+    fc.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); fc.restore();
+  }
+  if (parts.length) requestAnimationFrame(fxStep); else { fxOn = false; fc.clearRect(0,0,fx.width,fx.height); }
+}
+
+new ResizeObserver(draw).observe(box);
+if (document.fonts) document.fonts.ready.then(draw);
+render();
+}
+</script>
+</body>
+</html>
