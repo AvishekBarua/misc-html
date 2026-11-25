@@ -64,6 +64,10 @@ a:focus-visible{outline:2px solid var(--co2);outline-offset:2px}
 .fbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--mut)}
 .fbar button{font:600 14px Inter,sans-serif;min-height:44px;padding:0 16px;border-radius:6px;border:1px solid var(--co2);background:transparent;color:var(--co2);cursor:pointer}
 .fbar button:focus-visible{outline:2px solid var(--co2);outline-offset:2px}
+.jump{font:700 16px 'Space Grotesk',sans-serif;color:var(--co2);background:var(--zone);border:1px solid var(--line);border-radius:6px;min-height:40px;min-width:52px;padding:0 10px;cursor:pointer;white-space:nowrap}
+.jump:hover{border-color:var(--co2)}.jump:focus-visible{outline:2px solid var(--co2);outline-offset:2px}
+tr.flash td{background:light-dark(#fff3b0,#3a3410)!important;transition:background .2s}
+html{scroll-padding-top:16px}
 tr[hidden]{display:none!important}
 .empty td{text-align:center;color:var(--mut);padding:20px}
 .spec{min-width:900px}
@@ -189,13 +193,13 @@ document.getElementById(key).innerHTML=`
 <p class="sub">Office fee is the dealer's extra charge on top of the price. Dealer figures are from each ad's seller box. Highlighted rows are in the Top 5.</p>
 <div class="fbar"><span id="${key}1-c" aria-live="polite"></span><button type="button" data-clear="${key}1">Clear filters</button><span>Type to filter any column. Number columns also take &lt; or &gt;, e.g. &lt;100000.</span></div>
 <div class="scroll"><table class="stack xwide" id="${key}1"><thead><tr><th>#</th><th>Car (ad link)</th><th>Price</th><th>Office fee</th><th>Year (first reg.)</th><th>Mileage</th><th>≈ km / year</th><th>Finnish car or imported</th><th>Owners</th><th>Hybrid type</th><th>Power</th><th>Boot (typical)</th><th>Location / dealer</th><th>Dealer on Nettiauto</th><th>Dealer's own listings</th><th>Chain listings</th></tr></thead><tbody>
-${sorted.map(c=>`<tr class="${c.pick?'pick':''}"><td class="id">${c.id}</td><td><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a></td><td class="n">${eur(c.price)}</td><td class="n">${eur(c.fee)}</td><td>${esc(c.year)}</td><td class="n ${c.km<100000?'good':''}">${fmt(c.km)}</td><td class="n ${kmy(c)>=35000?'bad':''}">${'~'+kmy(c).toLocaleString('en-US')}</td><td>${v(c.origin)}</td><td>${v(c.owners)}</td><td>${esc(c.type)}</td><td>${esc(c.hp)}</td><td class="n">${esc(c.boot)}</td><td>${esc(c.loc)}</td><td class="n">${esc(c.dy)}</td><td class="n">${esc(c.dl)}</td><td>${esc(c.ch)}</td></tr>`).join('')}
+${sorted.map(c=>`<tr id="${key}1-${c.id}" class="${c.pick?'pick':''}"><td class="id"><button type="button" class="jump" data-to="${key}2-${c.id}" aria-label="Go to ${c.id} in Equipment and condition">${c.id} <span aria-hidden="true">↓</span></button></td><td><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a></td><td class="n">${eur(c.price)}</td><td class="n">${eur(c.fee)}</td><td>${esc(c.year)}</td><td class="n ${c.km<100000?'good':''}">${fmt(c.km)}</td><td class="n ${kmy(c)>=35000?'bad':''}">${'~'+kmy(c).toLocaleString('en-US')}</td><td>${v(c.origin)}</td><td>${v(c.owners)}</td><td>${esc(c.type)}</td><td>${esc(c.hp)}</td><td class="n">${esc(c.boot)}</td><td>${esc(c.loc)}</td><td class="n">${esc(c.dy)}</td><td class="n">${esc(c.dl)}</td><td>${esc(c.ch)}</td></tr>`).join('')}
 </tbody></table></div></div></div>
 <div class="band" style="padding-top:0"><div class="wrap"><h2>Equipment and condition</h2>
 <p class="sub">From each ad's equipment list and notes. No ad describes how worn the tires or body are.</p>
 <div class="fbar"><span id="${key}2-c" aria-live="polite"></span><button type="button" data-clear="${key}2">Clear filters</button></div>
 <div class="scroll"><table class="stack wide" id="${key}2"><thead><tr><th>#</th><th>Camera and sensors</th><th>360° camera</th><th>Seats</th><th>Sound system</th><th>Tires</th><th>Condition and service</th><th>Warranty</th><th>Other</th></tr></thead><tbody>
-${sorted.map(c=>`<tr class="${c.pick?'pick':''}"><td class="id">${c.id}</td><td>${v(c.cam)}</td><td class="${c.c360==='Yes'?'good':''}">${esc(c.c360)}</td><td>${v(c.seat)}</td><td>${v(c.sound)}</td><td>${v(c.tire)}</td><td>${v(c.cond)}</td><td>${v(c.war)}</td><td>${esc(c.other)}</td></tr>`).join('')}
+${sorted.map(c=>`<tr id="${key}2-${c.id}" class="${c.pick?'pick':''}"><td class="id"><button type="button" class="jump" data-to="${key}1-${c.id}" aria-label="Back to ${c.id} in Key facts">${c.id} <span aria-hidden="true">↑</span></button></td><td>${v(c.cam)}</td><td class="${c.c360==='Yes'?'good':''}">${esc(c.c360)}</td><td>${v(c.seat)}</td><td>${v(c.sound)}</td><td>${v(c.tire)}</td><td>${v(c.cond)}</td><td>${v(c.war)}</td><td>${esc(c.other)}</td></tr>`).join('')}
 </tbody></table></div></div></div>`;
 bars('chart-'+key,sorted);setup(key+'1');setup(key+'2')};
 
@@ -252,6 +256,11 @@ ${R('Other',c=>esc(c.other))}
 ${R('Dealer',c=>esc(c.dy)+' on Nettiauto · '+esc(c.dl)+' listings')}
 </tbody>`;
 
+document.addEventListener('click',e=>{const b=e.target.closest('.jump');if(!b)return;const r=document.getElementById(b.dataset.to);if(!r)return;
+if(r.hidden){const tb=r.closest('table');tb.querySelectorAll('.flt input').forEach(x=>x.value='');tb.querySelector('.flt').dispatchEvent(new Event('input'))}
+r.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
+r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash');setTimeout(()=>r.classList.remove('flash'),1800);
+const t=r.querySelector('.jump');if(t)t.focus({preventScroll:true})});
 const ids=['best','corolla','skoda'];
 const show=()=>{const h=location.hash.slice(1),cur=ids.includes(h)?h:'best';
 ids.forEach(k=>{document.getElementById(k).hidden=k!==cur;const t=document.getElementById('tab-'+k);t.setAttribute('aria-selected',k===cur);t.tabIndex=k===cur?0:-1})};
