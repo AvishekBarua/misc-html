@@ -68,6 +68,13 @@ a:focus-visible{outline:2px solid var(--co2);outline-offset:2px}
 .jump:hover{border-color:var(--co2)}.jump:focus-visible{outline:2px solid var(--co2);outline-offset:2px}
 tr.flash td{background:light-dark(#fff3b0,#3a3410)!important;transition:background .2s}
 html{scroll-padding-top:16px}
+.fig{position:relative;min-height:360px}.fig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.pt{cursor:pointer;outline:none}.pt circle{stroke:var(--bg);stroke-width:2}.pt:hover circle,.pt:focus-visible circle{stroke:var(--ink);stroke-width:3}
+.pt text{font:700 14px 'Space Grotesk',sans-serif;fill:var(--ink)}
+.ax{font:13px Inter,sans-serif;fill:var(--mut)}.gl{stroke:var(--line)}.limt{font:600 13px Inter,sans-serif;fill:var(--warn)}
+.ylg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mut);margin:8px 0 0;padding:0;list-style:none}
+.ylg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+:root{--y21:light-dark(#b9c7f7,#3b4c86);--y22:light-dark(#6f8df2,#5f7fe8);--y23:light-dark(#1240e0,#8fa8ff);--y24:light-dark(#08196b,#d2dcff)}
 tr[hidden]{display:none!important}
 .empty td{text-align:center;color:var(--mut);padding:20px}
 .spec{min-width:900px}
@@ -113,6 +120,11 @@ tr[hidden]{display:none!important}
 <div class="chart" id="chart-best"></div>
 <p class="legend"><b>Red line</b> = 100,000 km. Bars run to 150,000 km.</p>
 </div>
+</div></div>
+<div class="band" style="padding-top:0"><div class="wrap"><h2>Price, mileage and year</h2>
+<p class="sub">Each dot is one of the top 5. Click or tap a dot to jump to its row in Key facts on its model tab.</p>
+<div class="fig" id="sc-best"><svg role="img" aria-label="Scatter chart of price against mileage, coloured by year"></svg></div>
+<ul class="ylg"><li><i style="background:var(--y21)"></i>2021</li><li><i style="background:var(--y22)"></i>2022</li><li><i style="background:var(--y23)"></i>2023</li><li><i style="background:var(--y24)"></i>2024</li><li>Colour = first registration year. Cheaper is lower, fewer km is further left. Dashed red line = 100,000 km.</li></ul>
 </div></div>
 <div class="band" style="padding-top:0"><div class="wrap">
 <h2>Side by side</h2>
@@ -184,11 +196,36 @@ const kmy=c=>Math.round(c.km/((TODAY-new Date(c.reg))/31557600000)/500)*500;
 const MAX=150000;
 const bars=(el,list)=>{document.getElementById(el).innerHTML=list.map(c=>`<div class="row"><span class="lab">${c.id}</span><div class="track"><div class="bar${c.km>100000?' over':''}" style="width:${Math.min(100,c.km/MAX*100).toFixed(1)}%"></div><div class="lim" style="left:${100000/MAX*100}%"></div></div><span class="km">${fmt(c.km)}</span></div>`).join('')};
 
+function scatter(id,list){
+const svg=document.querySelector('#'+id+' svg');
+const draw=()=>{const W=svg.clientWidth,H=svg.clientHeight;if(!W||!H)return;const sm=W<520;
+const m={l:sm?46:70,r:18,t:22,b:46},iw=W-m.l-m.r,ih=H-m.t-m.b;
+const ps=list.map(c=>c.price),lo=Math.floor((Math.min(...ps)-400)/1000)*1000,hi=Math.ceil((Math.max(...ps)+400)/1000)*1000;
+const X=k=>m.l+k/150000*iw,Y=p=>m.t+(hi-p)/(hi-lo)*ih;
+let g='';
+for(let p=lo;p<=hi;p+=(hi-lo>4000?1000:500)){g+=`<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(p)}" y2="${Y(p)}"/><text class="ax" x="${m.l-8}" y="${Y(p)+4}" text-anchor="end">${sm?'€'+(p/1000)+'k':'€'+p.toLocaleString('en-US')}</text>`}
+for(let k=0;k<=150000;k+=sm?50000:25000){g+=`<text class="ax" x="${X(k)}" y="${H-m.b+20}" text-anchor="middle">${k/1000}k</text>`}
+g+=`<text class="ax" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">Mileage (km)</text>`;
+g+=`<line x1="${X(100000)}" x2="${X(100000)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--warn)" stroke-width="2" stroke-dasharray="5 4"/><text class="limt" x="${X(100000)-6}" y="${m.t-6}" text-anchor="end">100,000 km</text>`;
+const placed=[],r=sm?8:9,yc=c=>'var(--y'+c.reg.slice(2,4)+')';
+const pts=[...list].sort((a,b)=>a.km-b.km).map(c=>{const cx=X(c.km),cy=Y(c.price);placed.push({x:cx-r,y:cy-r,w:2*r,h:2*r});return{c,cx,cy}});
+const hit=b=>placed.some(q=>b.x<q.x+q.w&&b.x+b.w>q.x&&b.y<q.y+q.h&&b.y+b.h>q.y)||b.x<0||b.x+b.w>W||b.y<0||b.y+b.h>H-m.b;
+const out=pts.map(({c,cx,cy})=>{const w=10,h=16,opts=[[r+4,5,'start'],[-r-4,5,'end'],[0,-r-6,'middle'],[0,r+16,'middle'],[r+4,-10,'start'],[r+4,20,'start']];
+let best=opts[0];for(const o of opts){const bx=o[2]=='start'?cx+o[0]:o[2]=='end'?cx+o[0]-w:cx-w/2,b={x:bx,y:cy+o[1]-h+3,w,h};if(!hit(b)){best=o;placed.push(b);break}}
+const tip=`${c.id}: ${c.name}, ${c.year}, ${fmt(c.km)}, ${eur(c.price)}`;
+return `<g class="pt" role="button" tabindex="0" data-to="${c.panel}1-${c.id}" aria-label="${esc(tip)}. Go to its Key facts row"><title>${esc(tip)}</title><circle cx="${cx}" cy="${cy}" r="${r}" fill="${yc(c)}"/><circle cx="${cx}" cy="${cy}" r="${r+10}" fill="transparent" stroke="none"/><text x="${cx+best[0]}" y="${cy+best[1]}" text-anchor="${best[2]}">${esc(c.id)}</text></g>`}).join('');
+svg.innerHTML=g+out};
+const ro=new ResizeObserver(draw);ro.observe(svg)}
 const panel=(key,list,verdict)=>{
 const sorted=[...list].sort((a,b)=>a.km-b.km);
 document.getElementById(key).innerHTML=`
 <div class="band"><div class="wrap top"><div class="verdict">${verdict}</div>
 <div><h2>Mileage</h2><p class="sub">Sorted lowest first, with your 100,000 km limit marked.</p><div class="chart" id="chart-${key}"></div><p class="legend"><b>Red line</b> = 100,000 km. Bars run to 150,000 km.</p></div></div></div>
+<div class="band" style="padding-top:0"><div class="wrap"><h2>Price, mileage and year</h2>
+<p class="sub">Each dot is one car. Click or tap a dot to jump to its row in Key facts.</p>
+<div class="fig" id="sc-${key}"><svg role="img" aria-label="Scatter chart of price against mileage, coloured by year"></svg></div>
+<ul class="ylg"><li><i style="background:var(--y21)"></i>2021</li><li><i style="background:var(--y22)"></i>2022</li><li><i style="background:var(--y23)"></i>2023</li><li><i style="background:var(--y24)"></i>2024</li><li>Colour = first registration year. Cheaper is lower, fewer km is further left. Dashed red line = 100,000 km.</li></ul>
+</div></div>
 <div class="band" style="padding-top:0"><div class="wrap"><h2>Key facts</h2>
 <p class="sub">Office fee is the dealer's extra charge on top of the price. Dealer figures are from each ad's seller box. Highlighted rows are in the Top 5.</p>
 <div class="fbar"><span id="${key}1-c" aria-live="polite"></span><button type="button" data-clear="${key}1">Clear filters</button><span>Type to filter any column. Number columns also take &lt; or &gt;, e.g. &lt;100000.</span></div>
@@ -201,7 +238,7 @@ ${sorted.map(c=>`<tr id="${key}1-${c.id}" class="${c.pick?'pick':''}"><td class=
 <div class="scroll"><table class="stack wide" id="${key}2"><thead><tr><th>#</th><th>Camera and sensors</th><th>360° camera</th><th>Seats</th><th>Sound system</th><th>Tires</th><th>Condition and service</th><th>Warranty</th><th>Other</th></tr></thead><tbody>
 ${sorted.map(c=>`<tr id="${key}2-${c.id}" class="${c.pick?'pick':''}"><td class="id"><button type="button" class="jump" data-to="${key}1-${c.id}" aria-label="Back to ${c.id} in Key facts">${c.id} <span aria-hidden="true">↑</span></button></td><td>${v(c.cam)}</td><td class="${c.c360==='Yes'?'good':''}">${esc(c.c360)}</td><td>${v(c.seat)}</td><td>${v(c.sound)}</td><td>${v(c.tire)}</td><td>${v(c.cond)}</td><td>${v(c.war)}</td><td>${esc(c.other)}</td></tr>`).join('')}
 </tbody></table></div></div></div>`;
-bars('chart-'+key,sorted);setup(key+'1');setup(key+'2')};
+list.forEach(c=>c.panel=key);bars('chart-'+key,sorted);scatter('sc-'+key,list);setup(key+'1');setup(key+'2')};
 
 const num=t=>{const m=t.replace(/[\s,€~]/g,'').match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):NaN};
 function setup(id){
@@ -232,7 +269,7 @@ panel('skoda',skoda,`<h2>Skoda shortlist</h2><ul>
 <p class="foot">Octavia plug-ins (J, K, M) have a smaller boot of about 490 L because of the battery.</p>`);
 
 const top=['A','B','M','K','J'].map(id=>[...corolla,...skoda].find(c=>c.id===id));
-bars('chart-best',top);
+bars('chart-best',top);scatter('sc-best',top);
 const R=(label,f)=>`<tr><th scope="row">${label}</th>${top.map(c=>`<td>${f(c)}</td>`).join('')}</tr>`;
 document.getElementById('spec').innerHTML=`<thead><tr><th></th>${top.map((c,i)=>`<th><span class="rank">${i+1}</span><br>${esc(c.id)} · <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.name)}</a><small>${esc(c.loc)}</small></th>`).join('')}</tr></thead><tbody>
 ${R('Why it\'s here',c=>esc(c.why))}
@@ -256,11 +293,13 @@ ${R('Other',c=>esc(c.other))}
 ${R('Dealer',c=>esc(c.dy)+' on Nettiauto · '+esc(c.dl)+' listings')}
 </tbody>`;
 
-document.addEventListener('click',e=>{const b=e.target.closest('.jump');if(!b)return;const r=document.getElementById(b.dataset.to);if(!r)return;
+const jumpTo=to=>{const r=document.getElementById(to);if(!r)return;const sec=r.closest('[role=tabpanel]');if(sec&&sec.hidden){location.hash=sec.id;show()}
 if(r.hidden){const tb=r.closest('table');tb.querySelectorAll('.flt input').forEach(x=>x.value='');tb.querySelector('.flt').dispatchEvent(new Event('input'))}
 r.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
 r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash');setTimeout(()=>r.classList.remove('flash'),1800);
-const t=r.querySelector('.jump');if(t)t.focus({preventScroll:true})});
+const t=r.querySelector('.jump');if(t)t.focus({preventScroll:true})};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-to]');if(b)jumpTo(b.dataset.to)});
+document.addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('.pt');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();jumpTo(b.dataset.to)}});
 const ids=['best','corolla','skoda'];
 const show=()=>{const h=location.hash.slice(1),cur=ids.includes(h)?h:'best';
 ids.forEach(k=>{document.getElementById(k).hidden=k!==cur;const t=document.getElementById('tab-'+k);t.setAttribute('aria-selected',k===cur);t.tabIndex=k===cur?0:-1})};
