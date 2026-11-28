@@ -91,11 +91,11 @@ tr[hidden]{display:none!important}
 </head>
 <body>
 <header class="strip"><div class="wrap">
-<h1>14 hybrid estates compared: 5 are under your 100,000 km limit</h1>
-<p>Toyota Corolla Touring Sports and Skoda Octavia / Superb Combi on Nettiauto, checked 25.11.2026. "Not stated" means the ad doesn't say.</p>
+<h1>15 hybrid estates compared: 5 are under your 100,000 km limit</h1>
+<p>Toyota Corolla Touring Sports and Skoda Octavia / Superb Combi on Nettiauto, checked 25–28.11.2026. "Not stated" means the ad doesn't say.</p>
 <div class="tabs" role="tablist" aria-label="Car lists">
 <button role="tab" id="tab-best" aria-controls="best" aria-selected="false">Top 5</button>
-<button role="tab" id="tab-corolla" aria-controls="corolla" aria-selected="false">Toyota Corolla (7)</button>
+<button role="tab" id="tab-corolla" aria-controls="corolla" aria-selected="false">Toyota Corolla (8)</button>
 <button role="tab" id="tab-skoda" aria-controls="skoda" aria-selected="false">Skoda (7)</button>
 </div>
 </div></header>
@@ -112,7 +112,7 @@ tr[hidden]{display:none!important}
 <li><b>K · Octavia plug-in, 78,500 km.</b> 1 owner, the only car with a 360° camera, battery health 97.1%. Seinäjoki.</li>
 <li><b>J · Octavia plug-in, 86,000 km.</b> 1 owner, serviced 9/2026, 2.99% loan offer. Kokkola, and the ad lists little equipment.</li>
 </ol>
-<p class="foot">These are the only 5 of the 14 under 100,000 km. The Skoda plug-ins drive about 50–60 km on electricity if you can charge at home, but their boot (about 490 L) is just under your 500 L minimum. The Corollas have about 600 L.</p>
+<p class="foot">These are the only 5 of the 15 under 100,000 km. The Skoda plug-ins drive about 50–60 km on electricity if you can charge at home, but their boot (about 490 L) is just under your 500 L minimum. The Corollas have about 600 L.</p>
 </div>
 <div>
 <h2>Mileage of the top 5</h2>
@@ -158,19 +158,21 @@ const OCT_E={boot:'~640 L',type:'Mild hybrid (eTEC)',c360:'No'};
 const OCT_P={boot:'~490 L',type:'Plug-in hybrid, 13 kWh',c360:'No'};
 const corolla=[
 {...COR,id:'A',name:'Corolla TS Launch Edition 140 hp',url:'https://www.nettiauto.com/toyota/corolla/16029320',price:21900,fee:100,reg:'2023-06-27',year:'2023 (06/2023)',km:22000,origin:'Finnish car',owners:NS,hp:'140 hp',loc:'Vantaa · Ri-Lease Auto Center',dy:'25 years',dl:'18',ch:'—',pick:1,
-cam:'Rear camera with guide lines, rain sensor',seat:'Heated; 60/40 folding rear seats, rear armrest',sound:'Bluetooth, CarPlay/Android Auto, USB',tire:NS,cond:'Inspected 9/2026',war:NS,other:'Towbar, navigation, adaptive cruise',why:'Lowest km of all 14, newest model, Finnish car, big boot'},
-{...COR,id:'B',name:'Corolla TS Active, 2× tires & rims',url:'https://www.nettiauto.com/toyota/corolla/15998972',price:22790,fee:349,reg:'2022-11-15',year:'2022 (11/2022)',km:66000,origin:NS,owners:NS,hp:'122 hp',loc:'Tuusula · Kamux',dy:'11 years',dl:'122',ch:'4,458 (Kamux)',pick:1,
+cam:'Rear camera with guide lines, rain sensor',seat:'Heated; 60/40 folding rear seats, rear armrest',sound:'Bluetooth, CarPlay/Android Auto, USB',tire:NS,cond:'Inspected 9/2026',war:NS,other:'Towbar, navigation, adaptive cruise',why:'Lowest km of all 15, newest model, Finnish car, big boot'},
+{...COR,id:'B',name:'Corolla TS Active, 2× tires & rims',url:'https://www.nettiauto.com/toyota/corolla/15998972',price:22790,fee:349,reg:'2022-11-15',year:'2022 (11/2022)',km:66000,origin:NS,owners:NS,hp:'122 hp',loc:'Tuusula · Kamux',dy:'11 years',dl:'121',ch:'4,497 (Kamux)',pick:1,
 cam:'Rear camera, lane assist, collision warning, rain sensor, speed-sign reading, tire-pressure monitor',seat:'Heated',sound:'Bluetooth, USB',tire:'Two sets on alloy rims',cond:'Just serviced at a brand workshop, paper service book, inspected 11/2026',war:NS,other:'Adaptive cruise, high-beam assist, keyless start, heated steering wheel',why:'Low km, freshly serviced, boot over 500 L'},
 {...COR,id:'C',name:'Corolla TS Active',url:'https://www.nettiauto.com/toyota/corolla/16035120',price:22770,fee:349,reg:'2022-01-21',year:'2022 (01/2022)',km:119000,origin:NS,owners:NS,hp:'122 hp',loc:'Tampere · LänsiAuto Hatanpää',dy:'2 years',dl:'109',ch:'1,256 (LänsiAuto)',
 cam:'Rear camera, lane keeping, collision warning, tire-pressure monitor',seat:'Heated',sound:'Sound system (brand not given), Bluetooth',tire:'Two sets; summer tires almost new',cond:'Paper service book; inspection date not stated',war:NS,other:'Navigation, alarm, keyless start; 3.88% loan offer'},
 {...COR,id:'D',name:'Corolla TS Prestige, Toyota Approved',url:'https://www.nettiauto.com/toyota/corolla/16096290',price:22890,fee:299,reg:'2022-08-24',year:'2022 (08/2022)',km:126097,origin:'Finnish car',owners:NS,hp:'122 hp',loc:'Lohja · Lohjan Autokeskus (Toyota dealer)',dy:'24 years',dl:'80',ch:'— · Toyota dealer since 1962',
 cam:'Rear camera, lane assist',seat:'Heated (Prestige trim; material not stated)',sound:'Bluetooth, CarPlay/Android Auto',tire:'Two sets on rims',cond:'Toyota Approved check, inspected 8/2026',war:'Best: 12 months Approved cover + Toyota Relax to 10 yrs/200k km + hybrid battery to 10 yrs/350k km',other:'Towbar, engine and interior heater, heated windscreen'},
-{...COR,id:'E',name:'Corolla TS Life Business',url:'https://www.nettiauto.com/toyota/corolla/16013077',price:21480,fee:349,reg:'2022-06-30',year:'2022 (06/2022)',km:130114,origin:'Finnish car',owners:'1 owner',hp:'122 hp',loc:'Helsinki · J. Rinta-Jouppi',dy:'24 years',dl:'584',ch:'4,065 (Rinta-Jouppi)',
+{...COR,id:'E',name:'Corolla TS Life Business',url:'https://www.nettiauto.com/toyota/corolla/16013077',price:21480,fee:349,reg:'2022-06-30',year:'2022 (06/2022)',km:130114,origin:'Finnish car',owners:'1 owner',hp:'122 hp',loc:'Helsinki · J. Rinta-Jouppi',dy:'24 years',dl:'589',ch:'4,034 (Rinta-Jouppi)',
 cam:'Rear camera',seat:'Heated',sound:'Bluetooth, phone integration, USB',tire:'Two sets',cond:'Serviced 9/2026, inspected 6/2026',war:'Optional J. autoturva (extra cost)',other:'VAT-deductible, so probably a former company car'},
 {...COR,id:'F',name:'Corolla TS Prestige',url:'https://www.nettiauto.com/toyota/corolla/15992074',price:19980,fee:349,reg:'2022-05-31',year:'2022 (05/2022)',km:141000,origin:'Finnish car',owners:NS,hp:'122 hp',loc:'Rovaniemi · Rinta-Jouppi',dy:'16 years',dl:'170',ch:'4,162 (Rinta-Jouppi)',
 cam:'Rear camera',seat:NS,sound:NS,tire:'Two sets on rims; studded winter tires',cond:'Service book, but the "last service" line is left blank',war:NS,other:'Cheapest Corolla. Engine heater, dual-zone climate; about 900 km from Tampere'},
-{...COR,id:'G',name:'Corolla TS Lounge Launch Edition',url:'https://www.nettiauto.com/toyota/corolla/16025650',price:21550,fee:349,reg:'2023-06-15',year:'2023 (06/2023)',km:144000,origin:'Finnish car',owners:'1 owner',hp:'140 hp model (ad lists 98 hp engine)',loc:'Oulu · Kamux',dy:'8 years',dl:'95',ch:'4,458 (Kamux)',
-cam:'Rear camera, rain sensor',seat:'Semi-leather, heated',sound:'Sound system (brand not given), Bluetooth',tire:'Two sets on alloy rims',cond:'Paper service book; inspection date not stated',war:NS,other:'Highest km per year. Electric tailgate, digital dashboard, heated windscreen, keyless'}
+{...COR,id:'G',name:'Corolla TS Lounge Launch Edition',url:'https://www.nettiauto.com/toyota/corolla/16025650',price:21490,fee:349,reg:'2023-06-15',year:'2023 (06/2023)',km:144000,origin:'Finnish car',owners:'1 owner',hp:'140 hp model (ad lists 98 hp engine)',loc:'Oulu · Kamux',dy:'8 years',dl:'99',ch:'4,497 (Kamux)',
+cam:'Rear camera, rain sensor',seat:'Semi-leather, heated',sound:'Sound system (brand not given), Bluetooth',tire:'Two sets on alloy rims',cond:'Paper service book; inspection date not stated',war:NS,other:'Highest km per year. Electric tailgate, digital dashboard, heated windscreen, keyless'},
+{...COR,id:'O',name:'Corolla TS Launch Edition 140 hp',url:'https://www.nettiauto.com/toyota/corolla/16018147',price:22780,fee:349,reg:'2023-08-10',year:'2023 (08/2023)',km:103000,origin:'Finnish car',owners:'1 owner',hp:'140 hp',loc:'Lahti · J. Rinta-Jouppi',dy:'25 years',dl:'195',ch:'4,034 (Rinta-Jouppi)',
+cam:'Rear camera, lane assist, rain sensor',seat:'Heated',sound:'Phone integration, USB',tire:'Two sets on alloy rims',cond:'Paper service book; inspection date not stated',war:NS,other:'Just over your limit. Newer 140 hp model, adaptive cruise, Bi-LED lights, fog lights, electric tailgate, heated steering wheel'}
 ];
 const skoda=[
 {...OCT_E,id:'H',name:'Octavia Combi 1.5 TSI Style eTEC',url:'https://www.nettiauto.com/skoda/octavia/16057433',price:21990,fee:349,reg:'2023-04-05',year:'2023 (04/2023)',km:133000,origin:NS,owners:NS,hp:'150 hp',loc:'Tampere · LänsiAuto Tampere',dy:'7 years',dl:'117',ch:'1,256 (LänsiAuto)',
@@ -186,7 +188,7 @@ cam:'Rear camera, parking sensors, lane assist, emergency braking',seat:'Heated'
 {...OCT_P,id:'M',name:'Octavia Combi 1.4 PHEV Ambition iV',url:'https://www.nettiauto.com/skoda/octavia/16103092',price:22990,fee:299,reg:'2023-12-29',year:'2024 model (first reg. 12/2023)',km:67000,origin:NS,owners:NS,hp:'204 hp',loc:'Helsinki · Skoda Brand Store (official importer)',dy:'1 year',dl:'80',ch:'221 (Helkama)',pick:1,
 cam:'Parking sensors, rain sensor',seat:'Heated',sound:'Sound system (brand not given), Bluetooth, phone integration, USB',tire:'Two sets on alloy rims',cond:'Skoda Loisto approved: inspected, complete service book (electronic)',war:'Loisto programme; optional Loistoturva 12 months / 20,000 km €590',other:'Webasto, digital dashboard, LED lights, heated steering wheel, ski hatch; regular cruise',why:'Skoda-approved car from the official importer, low km'},
 {id:'N',name:'Superb Combi 1.4 PHEV Style BusinessLine iV',url:'https://www.nettiauto.com/skoda/superb/15922768',price:18590,fee:349,reg:'2022-05-05',year:'2022 (05/2022)',km:140000,origin:NS,owners:NS,hp:'Not listed',boot:'~510 L',type:'Plug-in hybrid, 13 kWh',c360:'No',loc:'Hämeenlinna · J. Rinta-Jouppi',dy:'11 years',dl:'153',ch:'4,065 (Rinta-Jouppi)',
-cam:'Parking sensors',seat:'Electric, heated',sound:'Canton premium audio, Bluetooth',tire:'Two sets on special rims',cond:NS,war:'Optional J. autoturva (extra cost)',other:'Cheapest of all 14. Webasto, Matrix LED, adaptive cruise, navigation, electric tailgate, towbar'}
+cam:'Parking sensors',seat:'Electric, heated',sound:'Canton premium audio, Bluetooth',tire:'Two sets on special rims',cond:NS,war:'Optional J. autoturva (extra cost)',other:'Cheapest of all 15. Webasto, Matrix LED, adaptive cruise, navigation, electric tailgate, towbar'}
 ];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const v=s=>s===NS?'<span class="na">'+NS+'</span>':esc(s);
@@ -259,11 +261,11 @@ run()}
 panel('corolla',corolla,`<h2>Corolla shortlist</h2><ul>
 <li><b>A: best fit.</b> 22,000 km, 2023, Finnish car, newer 140 hp model, €21,900. Check its history on Rekkari and ask if it was a leasing car.</li>
 <li><b>B: second choice.</b> 66,000 km, just serviced at a brand workshop, two sets of alloys.</li>
-<li>C is in Tampere but has 119,000 km. D has the best warranty. Avoid G: about 42,000 km a year points to taxi or fleet use.</li></ul>
+<li><b>O:</b> 103,000 km, just over your limit, but a 2023 140 hp model, 1 owner and a Finnish car.</li><li>C is in Tampere but has 119,000 km. D has the best warranty. Avoid G: about 42,000 km a year points to taxi or fleet use.</li></ul>
 <p class="foot">All are front-wheel drive full hybrids with a boot of about 600 L.</p>`);
 panel('skoda',skoda,`<h2>Skoda shortlist</h2><ul>
 <li><b>M: best Skoda.</b> 67,000 km plug-in, Skoda-approved (Loisto) car from the official importer's store in Helsinki.</li>
-<li><b>K:</b> 78,500 km, 1 owner, the only car of all 14 with a 360° camera, battery health 97.1%.</li>
+<li><b>K:</b> 78,500 km, 1 owner, the only car of all 15 with a 360° camera, battery health 97.1%.</li>
 <li><b>J:</b> 86,000 km, 1 owner, serviced 9/2026, but in Kokkola and the ad lists little equipment.</li>
 <li>H, I and L are mild hybrids (eTEC). They have a big ~640 L boot but use more fuel (about 5.7 l/100 km) and are all over 120,000 km. I has a rough-road package. N, the Superb, is the cheapest at €18,590 and has Canton audio, but 140,000 km.</li></ul>
 <p class="foot">Octavia plug-ins (J, K, M) have a smaller boot of about 490 L because of the battery.</p>`);
